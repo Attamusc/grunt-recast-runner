@@ -1,0 +1,41 @@
+{
+  "name": "grunt-recast-runner",
+  "description": "Run recast scripts across a codebase",
+  "version": "0.1.0",
+  "homepage": "https://github.com/Attamusc/grunt-recast-runner",
+  "author": {
+    "name": "Sean Dunn",
+    "email": "sean@attamusc.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Attamusc/grunt-recast-runner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Attamusc/grunt-recast-runner/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/Attamusc/grunt-recast-runner/blob/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "^0.9.2",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-nodeunit": "^0.3.3",
+    "grunt": "~0.4.5"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.5"
+  },
+  "keywords": [
+    "gruntplugin"
+  ]
+}
