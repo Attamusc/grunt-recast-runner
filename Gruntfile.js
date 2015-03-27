@@ -9,8 +9,6 @@
 'use strict';
 
 module.exports = function(grunt) {
-
-  // Project configuration.
   grunt.initConfig({
     jshint: {
       all: [
@@ -23,51 +21,38 @@ module.exports = function(grunt) {
       }
     },
 
-    // Before generating any new files, remove any previously-created files.
     clean: {
       tests: ['tmp']
     },
 
-    // Configuration to be run (and then tested).
-    recast_runner: {
-      default_options: {
-        options: {
-        },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
-      },
-      custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!'
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
+    copy: {
+      test: {
+        expand: true,
+        cwd: 'test/fixtures/basic/',
+        src: '**/*.js',
+        dest: 'tmp/'
       }
     },
 
-    // Unit tests.
+    recast: {
+      default: {
+        src: 'tmp/**/*.js',
+        tranforms: 'test/transforms/**/*.js'
+      }
+    },
+
     nodeunit: {
       tests: ['test/*_test.js']
     }
-
   });
 
-  // Actually load this plugin's task(s).
   grunt.loadTasks('tasks');
 
-  // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
-  // Whenever the "test" task is run, first clean the "tmp" dir, then run this
-  // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'recast_runner', 'nodeunit']);
-
-  // By default, lint and run all tests.
+  grunt.registerTask('test', ['clean', 'copy:test', 'recast', 'nodeunit']);
   grunt.registerTask('default', ['jshint', 'test']);
-
 };

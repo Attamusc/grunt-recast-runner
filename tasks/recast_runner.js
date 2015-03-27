@@ -8,42 +8,33 @@
 
 'use strict';
 
+var recast = require('recast');
+var path = require('path');
+
 module.exports = function(grunt) {
+  grunt.registerMultiTask('recast', 'Run recast scripts across a codebase', function() {
+    var transforms = grunt.file.expand(this.data.tranforms);
+    var files = this.filesSrc;
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
+    var options = this.options({});
 
-  grunt.registerMultiTask('recast_runner', 'Run recast scripts across a codebase', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
+    transforms.forEach(function(transform) {
+      var transformer = require(path.join(process.cwd(), transform))(recast);
 
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
+      files.filter(function(filepath) {
         if (!grunt.file.exists(filepath)) {
           grunt.log.warn('Source file "' + filepath + '" not found.');
           return false;
         } else {
           return true;
         }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
+      }).forEach(function(filepath) {
+        var ast = recast.parse(grunt.file.read(filepath));
+        recast.visit(ast, transformer);
 
-      // Handle options.
-      src += options.punctuation;
-
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
-
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
+        grunt.file.write(filepath, recast.print(ast).code);
+        grunt.log.writeln('"' + transform + '" processed "' + filepath + '".');
+      });
     });
   });
 
